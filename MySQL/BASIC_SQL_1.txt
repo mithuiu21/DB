@@ -1,0 +1,193 @@
+ -- Create Database
+ create database KMITHUIU_DB
+
+ --Use the database
+ use KMITHUIU_DB
+ --Create Table
+create table customer
+(
+	customerid int identity(1,1) primary key,
+	customernumber int not null unique check(customernumber > 0),
+	lastname varchar(30) not null,
+	firstname varchar(30) not null,
+	areacode int default 1215,
+	address varchar(50),
+	country varchar(50) default 'Bangladesh'
+)
+
+--Insert values into table
+insert into customer values
+(100,'Jonson', 'Peter',1210,'Dhaka', default),
+(101,'Jamse', 'Ron',1210,'Dhaka', default),
+(102,'Nolan', 'Christopher',1210,'SF', 'USA')
+
+-- Display record from table
+select * from customer
+
+-- Add new column to table
+alter table customer
+add phonenumber varchar(20)
+
+-- Add values to newly added column/ Update table
+update customer set phonenumber='123456' where customerid = 1
+
+-- Delete a column
+alter table customer
+drop column phonenumber
+
+--if not put 'where', will delete all record
+delete
+from customer
+where country = 'USA'
+
+--Delete table
+Drop table customer
+
+--Change data type
+alter table customer
+alter column phonenumber varchar(10)
+
+-------New DB-------
+-- Create database
+
+ create database KMITHUIU_DB
+
+--Create tables
+create table customer(
+	CustomerID int NOT null primary key,
+	CustomerFirstName varchar(50) NOT null,
+	CustomerLastName varchar(50) NOT null,
+	CustomerAddress varchar(50) NOT null,
+	CustomerSuburb varchar(50) null,
+	CustomerCity varchar(50) NOT null,
+	CustomerPostCode char(4) null,
+	CustomerPhoneNumber char(12) null,
+)
+go 
+
+
+
+create table inventory(
+	InventoryID tinyint NOT null primary key,
+	InventoryName varchar(50) NOT null,
+	InventoryDescription varchar(255) null,
+)
+go
+
+create table employee(
+	EmployeeID tinyint NOT null primary key,
+	EmployeeFirstName varchar(50) NOT null,
+	EmployeeLastName varchar(50) NOT null,
+	EmployeeExtension char(4) null,
+)
+go
+
+create table sale(
+	SaleID tinyint NOT null primary key,
+	CustomerID int not null references customer(CustomerID),
+	InventoryID tinyint not null references Inventory(InventoryID),
+	EmployeeID tinyint not null references Employee(EmployeeID),
+	SaleDate date not null,
+	SaleQuantity int not null,
+	SaleUnitPrice smallmoney not null,	
+)
+go
+
+ 
+ -- Check what table inside
+ select * from information_schema.tables
+
+ --View specific row
+ -- top: show only the first two
+ select top 2 * from customer
+
+ --top 40 percent: also means show the first two
+ select top 40 percent * from customer
+
+--View specific column
+--sort result (by default is ascending)
+select CustomerFirstName, CustomerLastName from customer
+order by CustomerLastName desc
+
+select CustomerFirstName, CustomerLastName from customer
+order by 1,2 desc -- Order by Based on column no. without typing column name
+
+select * from customer
+
+--distinct: only show unique value
+select distinct CustomerLastName from customer
+order by CustomerLastName
+
+-- Save table to another table
+--into file_name: save result in another table (BASE TABLE)
+select distinct CustomerLastName into temp
+from customer
+order by CustomerLastName
+
+select * from temp -- see the table (data type will remain)
+
+-- Like (search something)
+--(underscore sign)_ is only specific for one character only
+--(percent sign) % repersents zero, one, or multiple characters
+select * from customer
+where CustomerLastName like '_r%'
+
+-- search multiple items
+select * from customer
+Where CustomerLastName in('Leo','Jonny','Tom')
+
+-- >(search something)
+select * from customer
+where CustomerFirstName >'Leo' or CustomerFirstName > 'Tom'
+
+-- <>(Not Equal)
+select * from customer
+where CustomerLastName <> 'Nolan'
+
+
+-- IS NULL
+-- check null values
+select * from customer
+where CustomerLastName IS NULL
+
+-- IS NOT NULL
+select * from customer
+where CustomerLastName IS NOT NULL
+
+-- Between
+select * from sale
+where SaleUnitPrice between 4 and 10 --not include 4 & 10
+
+-- count()
+-- returns the number of rows in a table
+-- AS means aliasing, temporary giving name to a column/table
+select count(*) as [Number of Records] from customer
+where CustomerFirstName like'B%'
+
+--sum()
+select sale.EmployeeID, EmployeeFirstName, EmployeeLastName, count(*) as [Number of order],
+sum(SaleQuantity) as [Total Quantity] 
+from sale, employee
+where sale.EmployeeID = employee.EmployeeID
+group by sale.EmployeeID, EmployeeFirstName, EmployeeLastName
+
+-- count month
+select month(SaleDate) as [Month], count(*) as [Number of sale],
+sum(SaleQuantity*SaleUnitPrice) as [Total Amount]
+from sale
+
+--max
+select max(Salary)
+from EmployeeSalary
+
+--min
+select min(Salary)
+from EmployeeSalary
+
+--average
+select avg(Salary)
+from EmployeeSalary
+
+--------20---------
+
+
