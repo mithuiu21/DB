@@ -1,0 +1,36 @@
+CREATE TABLE tb_PurchaseRequisitionApprovedMain
+(
+Id INT PRIMARY KEY,
+ApprovedNo Varchar(20),
+ApprovedDate DATE DEFAULT GETDATE(),
+RequisitionId INT,
+CompanyId INT,
+StoreId INT,
+Total money,
+Remarks varchar(150),
+UserId INT,
+Valid INT,
+CreatedAt DATETIME DEFAULT GETDATE(),
+LogDtls VARCHAR(150),
+DeletedBy INT,
+foreign key (RequisitionId) references tb_PurchaseRequisitionMain(Id),
+foreign key(CompanyId) references tb_CompanyInfo(Id),
+foreign key(StoreId) references tb_Stores(Id),
+foreign key(UserId) references tb_UserInfo(Id)
+)
+GO
+
+CREATE TABLE tb_PurchaseRequisitionApprovedDetails
+(
+ApprovedId int,
+ProductId INT,
+CurrentQuantity money,
+RequisitionQuantity money,
+ApprovedQuantity money,
+LastTradePrice money,
+Total AS RequisitionQuantity*LastTradePrice,
+RowId INT,
+foreign key(ApprovedId) references tb_PurchaseRequisitionApprovedMain(Id),
+foreign key(ProductId) references tb_ProductInfo(Id)
+)
+GO
